@@ -1,31 +1,31 @@
 package com.fiap.mypass.auth;
 
+import com.fiap.mypass.user.UserRespository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fiap.mypass.user.UserRespository;
-
 @Service
 public class AuthService {
-    final UserRespository respository;
-    final PasswordEncoder passwordEncoder;
-    final TokenService tokenService;
-   
-    public AuthService(UserRespository respository, PasswordEncoder passwordEncoder, TokenService tokenService) {
-        this.respository = respository;
+
+    private final UserRespository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+
+    public AuthService(UserRespository userRepository, PasswordEncoder passwordEncoder, TokenService tokenService) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
     }
 
     public Token login(Credentials credentials){
-        var user = respository.findByName(credentials.name())
-                        .orElseThrow(() -> new RuntimeException("Acesso negado"));
+        var user = userRepository.findByName(credentials.name())
+                .orElseThrow(() -> new RuntimeException("Access Denied"));
 
-        if(!passwordEncoder.matches(credentials.password(), user.getPassword()))
-            throw new RuntimeException("Acesso negado");
+        if (!passwordEncoder.matches(credentials.password(), user.getPassword()))
+            throw new RuntimeException("Access Denied");
 
-            return tokenService.createToken(credentials.name());
+        return tokenService.createToken(credentials.name());
     }
 
-    
 }

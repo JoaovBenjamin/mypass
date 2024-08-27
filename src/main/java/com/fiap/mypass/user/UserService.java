@@ -8,19 +8,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    @Autowired
-    UserRespository respository;
 
+    @Autowired
+    UserRespository repository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public List<User> findAll(){
-        return respository.findAll();
+        return repository.findAll();
     }
 
     public User create(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return respository.save(user);
+        return repository.save(user);   
     }
 
 }
